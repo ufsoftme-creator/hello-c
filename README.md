@@ -63,6 +63,8 @@ Install completion in `~/.bashrc` using the release directory path:
 ./install-completion.sh
 ```
 
+Start a new Bash session afterwards, or source `hello.bash` in the current one.
+
 Without an explicit `VERSION`, the build reports a UTC timestamp such as
 `dev_build_2026-08-23-12-34-56`. Release builds use the Git tag version.
 

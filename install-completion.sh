@@ -20,4 +20,4 @@ else
     printf 'Added hello completion to %s\n' "$bashrc"
 fi
 
-source "$bashrc"
+printf 'Start a new Bash session or run: source %q\n' "$completion_file"

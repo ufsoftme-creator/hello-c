@@ -102,7 +102,7 @@ static int read_name(char *name, int capacity)
                 perror("Failed to read your name");
             } else {
                 fprintf(stderr,
-                    "The name is too long (maximum %d characters).\n",
+                    "The name is too long (maximum %d bytes).\n",
                         capacity - 1);
             }
             return 1;

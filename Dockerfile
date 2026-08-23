@@ -6,7 +6,8 @@ WORKDIR /src
 RUN apk add --no-cache build-base
 COPY hello.c Makefile ./
 RUN if [ -n "$VERSION" ]; then \
-		make clean && make VERSION="$VERSION" LDFLAGS=-static; \
+		normalized_version="${VERSION#v}"; \
+		make clean && make VERSION="$normalized_version" LDFLAGS=-static; \
 	else \
 		make clean && make LDFLAGS=-static; \
 	fi
