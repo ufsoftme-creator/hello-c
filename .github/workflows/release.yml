@@ -36,7 +36,7 @@ jobs:
 
       - name: Test x86_64 build
         if: matrix.architecture == 'x86_64'
-        run: make test
+        run: make test VERSION="${GITHUB_REF_NAME#v}"
 
       - name: Package ${{ matrix.architecture }}
         run: |
