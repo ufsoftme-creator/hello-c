@@ -108,3 +108,10 @@ Build and run an Alpine container:
 docker build -t hello .
 docker run --rm -i hello
 ```
+
+Release archives also include Docker images. Load one with:
+
+```sh
+docker load -i hello-v1.0.6-x86_64-image.tar
+docker run --rm -i "hello:v1.0.6-x86_64"
+```

@@ -17,10 +17,12 @@ jobs:
             compiler: cc
             package: ''
             linker_flags: ''
+            docker_platform: linux/amd64
           - architecture: arm64
             compiler: aarch64-linux-gnu-gcc
             package: gcc-aarch64-linux-gnu
             linker_flags: -static
+            docker_platform: linux/arm64
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +35,21 @@ jobs:
 
       - name: Build ${{ matrix.architecture }}
         run: make clean && make CC=${{ matrix.compiler }} VERSION="${GITHUB_REF_NAME#v}" LDFLAGS="${{ matrix.linker_flags }}"
+
+      - name: Set up QEMU
+        if: matrix.architecture == 'arm64'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image ${{ matrix.architecture }}
+        run: docker buildx build --platform ${{ matrix.docker_platform }} --build-arg VERSION="${GITHUB_REF_NAME#v}" --tag "hello:${GITHUB_REF_NAME}-${{ matrix.architecture }}" --load .
+
+      - name: Save Docker image ${{ matrix.architecture }}
+        run: |
+          docker save "hello:${GITHUB_REF_NAME}-${{ matrix.architecture }}" -o "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}-image.tar"
+          cp "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}-image.tar" "hello-${{ matrix.architecture }}-image.tar"
 
       - name: Test x86_64 build
         if: matrix.architecture == 'x86_64'
@@ -47,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hello-${{ matrix.architecture }}
-          path: hello-*.tar.gz
+          path: hello-*.tar*
 
   publish:
     needs: build
@@ -63,9 +80,9 @@ jobs:
 
       - name: Create checksums
         working-directory: dist
-        run: sha256sum hello-*.tar.gz > SHA256SUMS.txt
+        run: sha256sum hello-*.tar.gz hello-*-image.tar > SHA256SUMS.txt
 
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz dist/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --generate-notes --title "Hello $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz dist/*.tar dist/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --generate-notes --title "Hello $GITHUB_REF_NAME"
