@@ -90,6 +90,18 @@ Remove the compiled binary:
 make clean
 ```
 
+Install the latest release automatically:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/ufsoftme-creator/hello-c/main/install-latest.sh | bash
+```
+
+Add the install directory to `PATH` if needed:
+
+```sh
+export PATH="$HOME/.local/bin:$PATH"
+```
+
 Build and run an Alpine container:
 
 ```sh
