@@ -7,7 +7,8 @@
 static int read_name(char *name, int capacity)
 {
     int next_char;
-    int has_non_whitespace = 0;
+    char *start;
+    char *end;
 
     fputs("Enter your name: ", stdout);
     fflush(stdout);
@@ -41,14 +42,22 @@ static int read_name(char *name, int capacity)
         name[strcspn(name, "\n")] = '\0';
     }
 
-    for (size_t i = 0; name[i] != '\0'; i++) {
-        if (!isspace((unsigned char)name[i])) {
-            has_non_whitespace = 1;
-            break;
-        }
+    start = name;
+    while (isspace((unsigned char)*start)) {
+        start++;
     }
 
-    if (!has_non_whitespace) {
+    end = name + strlen(name);
+    while (end > start && isspace((unsigned char)end[-1])) {
+        end--;
+    }
+    *end = '\0';
+
+    if (start != name) {
+        memmove(name, start, (size_t)(end - start) + 1);
+    }
+
+    if (name[0] == '\0') {
         fputs("The name cannot be empty.\n", stderr);
         return 1;
     }
