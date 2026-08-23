@@ -33,3 +33,19 @@ jobs:
       - name: Test ${{ matrix.architecture }}
         if: matrix.run_tests
         run: make test
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Alpine image
+        run: docker build --build-arg VERSION=ci -t hello:ci .
+
+      - name: Test Alpine image
+        run: printf 'Alice\n' | docker run --rm -i hello:ci
+
+      - name: Check container version
+        run: docker run --rm hello:ci --version

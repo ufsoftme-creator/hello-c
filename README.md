@@ -78,8 +78,21 @@ Run the automated checks:
 make test
 ```
 
+Verify downloaded release archives:
+
+```sh
+sha256sum -c SHA256SUMS.txt
+```
+
 Remove the compiled binary:
 
 ```sh
 make clean
+```
+
+Build and run an Alpine container:
+
+```sh
+docker build --build-arg VERSION=docker -t hello .
+docker run --rm -i hello
 ```
