@@ -33,6 +33,36 @@ Print the build version:
 ./hello --version
 ```
 
+Short form:
+
+```sh
+./hello -v
+```
+
+Print usage information:
+
+```sh
+./hello --help
+```
+
+Short form:
+
+```sh
+./hello -h
+```
+
+Enable Bash TAB-completion for the command:
+
+```sh
+source hello.bash
+```
+
+Install completion in `~/.bashrc` using the release directory path:
+
+```sh
+./install-completion.sh
+```
+
 Without an explicit `VERSION`, the build reports a UTC timestamp such as
 `dev_build_2026-08-23-12-34-56`. Release builds use the Git tag version.
 

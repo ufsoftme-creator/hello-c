@@ -40,7 +40,7 @@ jobs:
 
       - name: Package ${{ matrix.architecture }}
         run: |
-          tar -czf "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" hello README.md
+          tar -czf "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" hello README.md hello.bash install-completion.sh
           cp "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" "hello-${{ matrix.architecture }}.tar.gz"
 
       - name: Upload package

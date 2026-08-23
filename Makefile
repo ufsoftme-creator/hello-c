@@ -19,6 +19,9 @@ debug:
 test:
 	@$(MAKE) clean all VERSION="$(VERSION)"
 	@version_output="$$(./$(TARGET) --version)"; printf '%s\n' "$$version_output"; test "$$version_output" = 'hello $(VERSION)'
+	@test "$$(./$(TARGET) -v)" = 'hello $(VERSION)'
+	@test "$$(./$(TARGET) --help)" = 'Usage: ./$(TARGET) [--help|--version]'
+	@test "$$(./$(TARGET) -h)" = 'Usage: ./$(TARGET) [--help|--version]'
 	@output="$$(printf 'Alice\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Alice!'
 	@output="$$(printf 'Привет\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Привет!'
 	@output="$$(printf '  Alice Smith \t\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Alice Smith!'
