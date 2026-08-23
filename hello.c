@@ -4,16 +4,15 @@
 
 #define NAME_BUFFER_SIZE 100
 
-int main(void)
+static int read_name(char *name, int capacity)
 {
-    char name[NAME_BUFFER_SIZE];
     int next_char;
     int has_non_whitespace = 0;
 
     fputs("Enter your name: ", stdout);
     fflush(stdout);
 
-    if (fgets(name, sizeof(name), stdin) == NULL) {
+    if (fgets(name, capacity, stdin) == NULL) {
         if (ferror(stdin)) {
             perror("Failed to read your name");
         } else {
@@ -33,8 +32,8 @@ int main(void)
                 perror("Failed to read your name");
             } else {
                 fprintf(stderr,
-                        "The name is too long (maximum %zu characters).\n",
-                        sizeof(name) - 1);
+                    "The name is too long (maximum %d characters).\n",
+                        capacity - 1);
             }
             return 1;
         }
@@ -51,6 +50,17 @@ int main(void)
 
     if (!has_non_whitespace) {
         fputs("The name cannot be empty.\n", stderr);
+        return 1;
+    }
+
+    return 0;
+}
+
+int main(void)
+{
+    char name[NAME_BUFFER_SIZE];
+
+    if (read_name(name, (int)sizeof(name)) != 0) {
         return 1;
     }
 
