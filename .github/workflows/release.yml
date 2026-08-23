@@ -39,13 +39,15 @@ jobs:
         run: make test
 
       - name: Package ${{ matrix.architecture }}
-        run: tar -czf "hello-${{ matrix.architecture }}.tar.gz" hello README.md
+        run: |
+          tar -czf "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" hello README.md
+          cp "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" "hello-${{ matrix.architecture }}.tar.gz"
 
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
           name: hello-${{ matrix.architecture }}
-          path: hello-${{ matrix.architecture }}.tar.gz
+          path: hello-*.tar.gz
 
   publish:
     needs: build
