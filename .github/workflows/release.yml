@@ -61,7 +61,11 @@ jobs:
           pattern: hello-*
           merge-multiple: true
 
+      - name: Create checksums
+        working-directory: dist
+        run: sha256sum hello-*.tar.gz > SHA256SUMS.txt
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz --repo "$GITHUB_REPOSITORY" --generate-notes --title "Hello $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz dist/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --generate-notes --title "Hello $GITHUB_REF_NAME"
