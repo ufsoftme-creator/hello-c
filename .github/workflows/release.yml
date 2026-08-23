@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - architecture: x86_64
+            compiler: cc
+            package: ''
+          - architecture: arm64
+            compiler: aarch64-linux-gnu-gcc
+            package: gcc-aarch64-linux-gnu
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install cross-compiler
+        if: matrix.package != ''
+        run: sudo apt-get update && sudo apt-get install -y ${{ matrix.package }}
+
+      - name: Build ${{ matrix.architecture }}
+        run: make clean && make CC=${{ matrix.compiler }}
+
+      - name: Test x86_64 build
+        if: matrix.architecture == 'x86_64'
+        run: make test
+
+      - name: Package ${{ matrix.architecture }}
+        run: tar -czf "hello-${GITHUB_REF_NAME}-${{ matrix.architecture }}.tar.gz" hello README.md
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-${{ matrix.architecture }}
+          path: hello-${{ github.ref_name }}-${{ matrix.architecture }}.tar.gz
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: hello-*
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.tar.gz --generate-notes --title "Hello $GITHUB_REF_NAME"
