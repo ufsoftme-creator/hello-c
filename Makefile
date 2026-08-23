@@ -22,9 +22,9 @@ test:
 	@test "$$(./$(TARGET) -v)" = 'hello $(VERSION)'
 	@test "$$(./$(TARGET) --help)" = 'Usage: ./$(TARGET) [--help|--version]'
 	@test "$$(./$(TARGET) -h)" = 'Usage: ./$(TARGET) [--help|--version]'
-	@output="$$(printf 'Alice\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Alice!'
-	@output="$$(printf 'Привет\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Привет!'
-	@output="$$(printf '  Alice Smith \t\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Enter your name: Hello, Alice Smith!'
+	@output="$$(printf 'Alice\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Hello, Alice!'
+	@output="$$(printf 'Привет\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Hello, Привет!'
+	@output="$$(printf '  Alice Smith \t\n' | ./$(TARGET))"; printf '%s\n' "$$output"; test "$$output" = 'Hello, Alice Smith!'
 	@tmp_file="$$(mktemp)"; if printf '\n' | ./$(TARGET) >"$$tmp_file" 2>&1; then cat "$$tmp_file"; rm -f "$$tmp_file"; exit 1; else status=$$?; cat "$$tmp_file"; rm -f "$$tmp_file"; test $$status -eq 1; fi
 	@tmp_file="$$(mktemp)"; if printf '\303\050\n' | ./$(TARGET) >"$$tmp_file" 2>&1; then cat "$$tmp_file"; rm -f "$$tmp_file"; exit 1; else status=$$?; cat "$$tmp_file"; rm -f "$$tmp_file"; test $$status -eq 1; fi
 	@long_name=; i=0; while [ $$i -lt 100 ]; do long_name=$${long_name}A; i=$$((i + 1)); done; \

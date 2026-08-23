@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
 
 #define NAME_BUFFER_SIZE 100
 #ifndef HELLO_VERSION
@@ -76,8 +77,10 @@ static int read_name(char *name, int capacity)
     char *start;
     char *end;
 
-    fputs("Enter your name: ", stdout);
-    fflush(stdout);
+    if (isatty(STDIN_FILENO)) {
+        fputs("Enter your name: ", stdout);
+        fflush(stdout);
+    }
 
     if (fgets(name, capacity, stdin) == NULL) {
         if (ferror(stdin)) {
