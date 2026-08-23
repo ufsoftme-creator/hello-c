@@ -28,7 +28,8 @@ Run the program:
 ```
 
 The program accepts names up to 99 bytes, trims whitespace at both ends, and
-keeps spaces inside the name.
+keeps spaces inside the name. Release archives contain a statically linked
+ARM64 binary suitable for Alpine-based systems.
 
 ## Tests
 

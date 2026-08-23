@@ -16,9 +16,11 @@ jobs:
           - architecture: x86_64
             compiler: cc
             package: ''
+            linker_flags: ''
           - architecture: arm64
             compiler: aarch64-linux-gnu-gcc
             package: gcc-aarch64-linux-gnu
+            linker_flags: -static
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +32,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y ${{ matrix.package }}
 
       - name: Build ${{ matrix.architecture }}
-        run: make clean && make CC=${{ matrix.compiler }}
+        run: make clean && make CC=${{ matrix.compiler }} LDFLAGS="${{ matrix.linker_flags }}"
 
       - name: Test x86_64 build
         if: matrix.architecture == 'x86_64'

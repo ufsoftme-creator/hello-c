@@ -9,7 +9,7 @@ TARGET := hello
 all: $(TARGET)
 
 $(TARGET): hello.c
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
 
 debug:
 	$(MAKE) clean
