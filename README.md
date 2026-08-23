@@ -93,6 +93,6 @@ make clean
 Build and run an Alpine container:
 
 ```sh
-docker build --build-arg VERSION=docker -t hello .
+docker build -t hello .
 docker run --rm -i hello
 ```

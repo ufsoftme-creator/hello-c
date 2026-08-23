@@ -1,11 +1,15 @@
 FROM alpine:3.22 AS build
 
-ARG VERSION=docker
+ARG VERSION
 WORKDIR /src
 
 RUN apk add --no-cache build-base
 COPY hello.c Makefile ./
-RUN make clean && make VERSION="$VERSION" LDFLAGS=-static
+RUN if [ -n "$VERSION" ]; then \
+		make clean && make VERSION="$VERSION" LDFLAGS=-static; \
+	else \
+		make clean && make LDFLAGS=-static; \
+	fi
 
 FROM alpine:3.22
 
