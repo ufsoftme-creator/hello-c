@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        include:
+          - architecture: x86_64
+            compiler: cc
+            package: ''
+            run_tests: true
+          - architecture: arm64
+            compiler: aarch64-linux-gnu-gcc
+            package: gcc-aarch64-linux-gnu
+            run_tests: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install cross-compiler
+        if: matrix.package != ''
+        run: sudo apt-get update && sudo apt-get install -y ${{ matrix.package }}
+
+      - name: Build ${{ matrix.architecture }}
+        run: make clean && make CC=${{ matrix.compiler }}
+
+      - name: Test ${{ matrix.architecture }}
+        if: matrix.run_tests
+        run: make test
